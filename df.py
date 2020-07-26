@@ -1,10 +1,21 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Apr 11 00:21:49 2020
+
+@author: Mete
+"""
+import os
+import smtplib
+import sys
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 import cv2
 import numpy as np
-from PIL import Image
-import os
-import pandas as pd
 import requests
+from PIL import Image
 from hdfs import InsecureClient
+
 
 class DataSet:
     def __init__(self,bilgi):
@@ -15,7 +26,7 @@ class DataSet:
         cam=cv2.VideoCapture(0)
         cam.set(3, 640) # video genişliği
         cam.set(4, 480) # video yüksekliği
-        face_detector = cv2.CascadeClassifier("C:\\Users\\Mete\\Desktop\\dsb2\\haarcascade_frontalface_default.xml")
+        face_detector = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
         # her kişi için sayısal bir yüz kimliği giriyoruz
         face_id = input('\n kullanıcı id numarası giriniz <return> ==>  ')
         print("\n [Bilgi] Yüz yakalama başlıyor.Resim kapasitesi dolana kadar bekleyin ...")
@@ -50,14 +61,15 @@ class DataSet:
         
 class DataAL:
 
-    client = InsecureClient('http://127.0.0.1' + ':50070')
-    client.download("/user/maria_dev/dataset1", "")
-    path = 'dataset1'
+    client = InsecureClient('http://192.168.206.139' + ':50070')
+    client.download("/user/hbase/dataset", "")
+
+    path = 'dataset'
     recognizer = cv2.face.LBPHFaceRecognizer_create()
     def getImagesAndLabels(path):
         
         recognizer = cv2.face.LBPHFaceRecognizer_create()
-        detector = cv2.CascadeClassifier("C:\\Users\\Mete\\Desktop\\dsb2\\haarcascade_frontalface_default.xml");
+        detector = cv2.CascadeClassifier("haarcascade_frontalface_default.xml");
         imagePaths = [os.path.join(path,f) for f in os.listdir(path)]     
         faceSamples=[]
         global ids
@@ -77,7 +89,7 @@ class DataAL:
     faces,ids = getImagesAndLabels(path)
     recognizer.train(faces, np.array(ids))
     #with client_hdfs.write('/user/hdfs/wiki/helloworld.csv', encoding='utf-8') as writer:
-    recognizer.write('trainer5.yml')
+    recognizer.write('trainer6.yml')
 
     #print("\n [INFO] {0} faces trained. Exiting Program".format(len(np.unique(ids))))
     def DataTrainSayisi(self):
@@ -89,16 +101,29 @@ class DataAL:
 def konum_al() -> object:
     res = requests.get('https://ipinfo.io/')  # bu webserver konum almamızı sağlıyor
     data = res.json()
-
     city = data['city']
-
     location = data['loc'].split(',')
     latitude = location[0]
     longitude = location[1]
-
     print("enlem : ", latitude)
     print("Boylam : ", longitude)
-    print("Şehir : ", city)
+    print("Şehir:", city)
+    global a, b, c
+    a = city
+    b = latitude
+    c = longitude
+    print(a)
+    ths = open("konum.txt", "w", encoding="utf-8")
+    ths.write(a)
+    ths.write("\n")
+    ths.write(b)
+    ths.write("\n")
+    ths.write(c)
+
+
+
+
+
 
 
 class DataTrain:
@@ -106,12 +131,14 @@ class DataTrain:
     def DataWork(self):
         
         recognizer = cv2.face.LBPHFaceRecognizer_create()
-        recognizer.read('trainer5.yml')
+        recognizer.read('trainer6.yml')
         cascadePath = "haarcascade_frontalface_default.xml"
         faceCascade = cv2.CascadeClassifier(cascadePath);
         font = cv2.FONT_HERSHEY_SIMPLEX
+        global id
+        global names
         id = 0
-        names = ['None', 'mete', 'gg', 'amperen']
+        names = ['None', 'Metehan Serce', 'Alperen Yildiz', 'x']
     
         cam = cv2.VideoCapture(0)
         cam.set(3, 640)
@@ -132,9 +159,11 @@ class DataTrain:
                 cv2.rectangle(img, (x,y), (x+w,y+h), (0,255,0), 2)
                 id, confidence = recognizer.predict(gray[y:y+h,x:x+w])
                 if (confidence < 100):
+
                     id = names[id]
-                    confidence = "  {0}%".format(round(100 - confidence))
+                    confidence = "  {0}%".format(round(155 - confidence))
                     konum_al()
+
                 else:
                     id = "unknown"
                     confidence = "  {0}%".format(round(100 - confidence))
@@ -148,9 +177,44 @@ class DataTrain:
                 break
         print("\n [INFO] Exiting Program and cleanup stuff")
         cam.release()
-        cv2.destroyAllWindows() 
+        cv2.destroyAllWindows()
+
+class Mail:
+    def mailAt(self):
+        message = MIMEMultipart()
+
+        message["From"] = "proje.server@gmail.com"  # Mail'i gönderen kişi
+
+        message["To"] = "alperenyildiz98@gmail.com"  # Mail'i alan kişi
+        body1 = str(id)
+
+        message["Subject"] = body1  # Mail'in konusu
+        body = ""
 
 
+        f = open("konum.txt", encoding="utf-8")
+        body_text = MIMEText(f.read())
+
+        message.attach(body_text)
+        try:
+            mail = smtplib.SMTP("smtp.gmail.com", 587)
+            mail.ehlo()
+            mail.starttls()
+            mail.login("proje.server@gmail.com", "canaziz44")
+            mail.sendmail(message["From"], message["To"], message.as_string())
+            print("Mail Başarılı bir şekilde gönderildi.")
+            mail.close()
+        except:
+            sys.stderr.write("Bir hata oluştu. Tekrar deneyin...")
+            sys.stderr.flush()
+
+#dst=DataSet("Bu bölüm DataSet oluşturmak için resim Toplar.\nOluşturulan Resim Sayısını anlık olarak konsol ekranından görebilirsiniz ")
+#print(dst.bilgi)
+#dst.dataTopla()
+#dst1=DataAL()
+#dst1.DataTrainSayisi()
+#dst2=DataTrain()
+#dst2.DataWork()
 
 
 

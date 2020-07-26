@@ -1,12 +1,20 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Apr 11 18:19:08 2020
+
+@author: Mete
+"""
 import time
 from df import DataSet
 from df import DataAL
 from df import DataTrain
+from df import Mail
 
 dst=DataSet("WELCOME ")
 print(dst.bilgi)
 dst1=DataAL()
 dst2=DataTrain()
+dst3=Mail()
 
 main_menu=True
 while True:
@@ -73,6 +81,9 @@ while True:
             
             if choice==1:
                 dst2.DataWork()
+                dst3.mailAt()
+
+
                 main_menu=True
             else:
                 print("invalid input. Please enter a number between 1-6")
@@ -84,4 +95,13 @@ while True:
         
         else:   
             print("ınvalid input.  Please Enter A-B-C-Q")
+
+
+
+
+#dst.dataTopla()
+
+#dst1.DataTrainSayisi()
+
+#dst2.DataWork()
 
