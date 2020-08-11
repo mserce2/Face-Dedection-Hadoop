@@ -2,7 +2,7 @@
 """
 Created on Sat Apr 11 00:21:49 2020
 
-@author: Mete
+@author: Almt Core
 """
 import os
 import smtplib
@@ -200,7 +200,7 @@ class Mail:
             mail = smtplib.SMTP("smtp.gmail.com", 587)
             mail.ehlo()
             mail.starttls()
-            mail.login("proje.server@gmail.com", "canaziz44")
+            mail.login("proje.server@gmail.com", "your xxxxxx")
             mail.sendmail(message["From"], message["To"], message.as_string())
             print("Mail Başarılı bir şekilde gönderildi.")
             mail.close()
