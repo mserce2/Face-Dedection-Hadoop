@@ -161,7 +161,7 @@ class DataTrain:
                 if (confidence < 100):
 
                     id = names[id]
-                    confidence = "  {0}%".format(round(155 - confidence))
+                    confidence = "  {0}%".format(round(100 - confidence))
                     konum_al()
 
                 else:
