@@ -1,6 +1,6 @@
 # DistrubutedFacesDedection
  Distrubuted system project that catches wanted/criminals designed for security institutions.Demo For now:
- https://drive.google.com/file/d/1UkBjqC_Gm7SGXkFjbVLeEmlid95Z5Gku/view?usp=sharing
+https://www.linkedin.com/feed/update/urn:li:activity:6699354614212370432/
 
 -Projemiz Hangi problemin çözümünü gerçekleştirecektir?
 -Günümüzde aranan,suçlu veya kaybolan kişilerin bulunması gerçekten çok zor
