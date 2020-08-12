@@ -23,6 +23,5 @@ common/SingleCluster.html
 -&gt;OpenCV kullanma sebebimiz;
 Yüz tanıma ve görüntü işleme konularında kullanabileceğimiz ve python ile çok uyumlu
 çalışması sebebiyle openCV kütüphanesini kullanmaya karar verdik.
-Hadoop kullanma sebebimiz;
--Yaptığımız araştırmalar sonucunda Hadoop ve Riak arasında kaldığımızı söyleyebilirim.
+
 
